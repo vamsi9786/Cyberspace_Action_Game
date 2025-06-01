@@ -3,6 +3,7 @@ let syshlth=document.getElementById("syshlt");
 let keys=document.getElementById("keys");
 let shards=document.getElementById("shards");
 let highscore=document.getElementById("highscore");
+let help=document.getElementById("helpbtn");
 
 let score=0;
 
@@ -21,6 +22,23 @@ let flag=false;
 let i=0;
 let keycollval=3;
 
+let Rules ={
+    r1:"Rules & Regulations:\n",
+    r2:"1.Collect Keys by destorying Buildings.\n",
+    r3:"2.Use Keys to Help AUREX by delivering Shards.\n",
+    r4:"3.Delivering Keys at Central Hub provides Shards\n",
+    r5:"4.Each Shard requires specific No.of Keys to decrypt.\n",
+    r6:"5.System Health increases on each delivery of Shards and Keys\n",
+    r7:"6.Player Wins! if system Health reaches 100% \n" ,
+    r8:"7.Player Health Decreases! under Surveillance Towers \n",
+    r9:"8.Player Loses! On Player Health or System Health becomes Zero..!",
+    // r10:"9.Have a Happy GamePlay..!"
+}    
+
+let rularr="";
+Object.entries(Rules).forEach(([key,value])=>{
+    rularr=rularr+value;
+});
 
 function distance(x1,y1,x2,y2){
     return Math.sqrt(Math.pow(x2-x1,2)+Math.pow(y2-y1,2));
@@ -44,7 +62,9 @@ resumebtn.addEventListener("click", function() {
     pausebtnres=false;
 });
 
-
+help.addEventListener("click", function() {
+    alert(rularr);
+});
 
 
 let canvas=document.getElementById('can1'); //map
@@ -54,7 +74,8 @@ let canvas4=document.getElementById('can4'); //Bullets
 let canvas5=document.getElementById('can5'); //keys
 let canvas6=document.getElementById('can6'); //Buildings
 let canvas7=document.getElementById('can7'); //shards
-let allcan=[canvas,canvas2,canvas3,canvas4,canvas5,canvas6,canvas7];
+let canvas8=document.getElementById('can8'); //alert
+let allcan=[canvas,canvas2,canvas3,canvas4,canvas5,canvas6,canvas7,canvas8];
 
 canvas.width=3000;
 canvas.height=2000;
@@ -70,6 +91,8 @@ canvas6.width=3000;
 canvas6.height=2000;
 canvas7.width=3000;
 canvas7.height=2000;
+canvas8.width=3000;
+canvas8.height=2000;
 
 
 let c=canvas.getContext('2d');
@@ -79,12 +102,13 @@ let c4=canvas4.getContext('2d');
 let c5=canvas5.getContext('2d');
 let c6=canvas6.getContext('2d');
 let c7=canvas7.getContext('2d');
-
+let c8=canvas8.getContext('2d');
 
 let mousemovement={
     x: undefined,
     y:undefined,
 }
+
 document.addEventListener('mousemove',(eve)=>{
 
     const rect2=canvas.getBoundingClientRect()
@@ -165,7 +189,18 @@ function arccircoll(arcx,arcy,arcr,startang,endang,cxx,cyy,crr){
     return (inRange && dis<(arcr+crr));
 }
 
-
+function radalert(ctx,val){
+    if(val){
+        ctx.clearRect(0,0,3000,2000);
+        ctx.fillRect(0,0,3000,2000);
+        ctx.fillStyle='rgba(255,0,0,0.15)';
+        ctx.fill();
+        
+    }
+    else{
+        ctx.clearRect(0,0,3000,2000);
+    }
+}
 
 let buildarr=[];
 class Building{
@@ -516,7 +551,7 @@ animateradar();
 let alertflag=false;
 function keyscollect(){
     keysarr.forEach((key)=>{
-        if(!key.collected && distance(plyrdetail.x,plyrdetail.y,key.x,key.y)<=13){
+        if(!key.collected && keyscollected<keycollord[i] && distance(plyrdetail.x,plyrdetail.y,key.x,key.y)<=13){
             if(attachedshard===null){
                 key.collected=true;
                 keyscollected++;
@@ -526,11 +561,12 @@ function keyscollect(){
             }
             else{
                 if(!alertflag){
-                    alert("Deliver the Shard");
+                    alert("Deliver the Shard \uD83D\uDCFf");
                     alertflag=true;
                 }
             }
         }
+       
     });
 }
 
@@ -538,6 +574,8 @@ function keysdeliver(){
     keysarr.forEach((key)=>{
         if(key.collected && !key.delivered && cirrectcollison(plyrdetail.x,plyrdetail.y,9,centralhubarr.x+20,centralhubarr.y+20,110,100)){
             key.delivered=true;
+            playerhlth=Math.min(100,playerhlth+4);
+            systemhlth=Math.min(80,systemhlth+2);
             score=score+10;
             key.clearkey();
             keysdelivered++;
@@ -558,11 +596,11 @@ function keysdeliver(){
         score=score+15;
         if(i<keycollord.length){
             keycollval=keycollord[i];
-            alert('shard generated! Deliver it to Base');
+            alert('shard \uD83D\uDCFf generated! Deliver it to Base');
         }
         else{
-            alert('shard generated! Deliver it to Base');
-            alert("All Keys are Collected");
+            alert('shard \uD83D\uDCFf generated! Deliver it to Base');
+            alert("All Keys \uD83D\uDD11 are Collected");
         }
     }
 }
@@ -574,19 +612,20 @@ function sharddeliver(){
         attachedshard.clearshard();
         shardsarr=shardsarr.filter(shard=> !shard.delivered);
         attachedshard=null;
-        playerhlth=Math.min(100,playerhlth+(7*1));
+        playerhlth=Math.min(100,playerhlth+(7*i));
         systemhlth=Math.min(80,systemhlth+(5*i));
         plyrhlth.innerHTML=playerhlth;
         syshlth.innerHTML=systemhlth;
         alertflag=false
-        alert('Shard Delivered,Collect '+keycollval+ ' keys for next shard');
+        alert('Shard \uD83D\uDCFf Delivered,Collect '+keycollval+ '\uD83D\uDD11 keys for next shard');
 
         if(i>=keycollord.length){
-            alert("Player Won! AUREX retrieved!");
+            alert("Player Won\u{1F3C6} AUREX retrieved!");
             location.reload();
         }
     }
 }
+
 
 document.addEventListener("keydown",(e)=>{
     e.preventDefault();
@@ -625,7 +664,7 @@ document.addEventListener("keydown",(e)=>{
 
     if(cirrectcollison(plyrdetail.x,plyrdetail.y,9,centralhubarr.x+20,centralhubarr.y+20,110,110) && i<4){
         if(!flag && i==0){
-            alert("collect "+keycollord[i]+ " Keys");
+            alert("collect "+keycollord[i]+ " \uD83D\uDD11Keys");
             flag=1;
         }
     }
@@ -663,6 +702,8 @@ function plyrmovement(){
             key.createkey();
         }
     });
+
+    radalert(c8,isplyrinanyrad());
 
     if(attachedshard && !attachedshard.delivered){
         attachedshard.clearshard();
@@ -712,6 +753,14 @@ function isplyrinanyrad(){
     }
 }
 
+let startalert;
+function strtalert(){
+    clearInterval(startalert);
+    startalert=setTimeout(()=>{
+        alert("Welcome to AUREX\u{1F49A}\nHave a Safe and Happy Gameplay..!");
+    },500);
+}
+strtalert();
 
 let plyhlthInterval;
 let syshlthInterval;
@@ -736,7 +785,7 @@ function plyhlthtmr(){
             }
             else{
                 alert("Player health is zero!");
-                alert("You Lost!");
+                alert("You Lost! Try Again\uD83D\uDD01");
                 savescore();
                 location.reload();
                 plyhlthtmr();
@@ -745,7 +794,11 @@ function plyhlthtmr(){
         else{
             playerhlth=playerhlth+0;
         }
-
+        if(systemhlth===100){
+            alert("Player Won\u{1F3C6}");
+            savescore();
+            location.reload();
+        }
     }, 500);
 }
 
@@ -761,7 +814,7 @@ function syshlthtmr(){
             }
             else{
                 alert("System health is below Limit! , Can't retrieve AUREX");
-                alert("You Lost!");
+                alert("You Lost!\uD83D\uDD01");
                 savescore();
                 location.reload();
                 syshlthtmr();

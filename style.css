@@ -30,6 +30,25 @@ canvas{
     z-index:4;
 }
 
+#can8{
+    z-index:-1;
+}
+
+#helpbtn{
+    position: fixed;
+    top:5px;
+    right:5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.5);
+    font-size: 1rem;
+    border: 1.2px solid #66ffff;
+    color: #66ffff;
+    z-index: 5;
+    /* font-family:'Orbitron', sans-serif; */
+}
+
 #topbox{
     position: fixed;
     top: 2px;
@@ -63,6 +82,7 @@ canvas{
 }
 #resume{
     width:75px;
+    height: 32.5px;
 }
 .font2{
     display: flex;
@@ -73,6 +93,6 @@ canvas{
     width:60px;
     border: 1.2px solid #66ffff;
     background-color: rgba(0, 0, 0, 0.725);
-    border-radius: 4px;
+    border-radius: 5px;
     font-size: 0.8rem;
 }
