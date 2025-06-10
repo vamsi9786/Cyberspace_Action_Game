@@ -157,6 +157,20 @@ function resolvecoll(cx,cy,r,rect){
     };
 }
 
+function resolvecircoll(xx1,yy1,rr1,cx1,cy1,cr1){
+    let distn=distance(xx1,yy1,cx1,cy1);
+    if(distn==(rr1+cr1)) return;
+    else if(distn<=(rr1+cr1)){
+        let ddx=xx1-cx1;
+        let ddy=yy1-cy1;
+        let ovrlap=(rr1+cr1)-distn;
+    }
+    return {
+        kx: (ddx/distn)*ovrlap,
+        ky: (ddy/distn)*ovrlap,
+    }
+}
+
 function circircoll(cx1,cy1,r1,cx2,cy2,r2){
     if(distance(cx1,cy1,cx2,cy2)<r1+r2) return true;
     else return false;
@@ -232,7 +246,7 @@ class Radar{
 
     updatearc(){
         if(!pausebtnres){
-            this.angleoffset=this.angleoffset+((Math.PI)/540);
+            this.angleoffset=this.angleoffset+((Math.PI)/360);
             this.varstart=this.startangle+this.angleoffset;
             this.varend=this.angleoffset+this.endangle;
         }
@@ -662,8 +676,16 @@ document.addEventListener("keydown",(e)=>{
         }
     }
 
+    for(let rad of radararr){
+        if(circircoll(newX,newY,9,rad.x,rad.y,10)){
+            const circorr= resolvecircoll(newX,newY,9,rad.x,rad.y,10);
+            newX=circorr.kx;
+            newY=circorr.ky;
+        }
+    }
+
     if(cirrectcollison(plyrdetail.x,plyrdetail.y,9,centralhubarr.x+20,centralhubarr.y+20,110,110) && i<4){
-        if(!flag && i==0){
+        if(!flag && i==0 && keyscollected<3){
             alert("collect "+keycollord[i]+ " \uD83D\uDD11Keys");
             flag=1;
         }
